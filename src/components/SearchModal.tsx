@@ -6,7 +6,7 @@ import { Loader2, Search, Users, Lock, MessageCircle } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { useChatStore } from "@/store/chatStore";
-import { SearchGroup } from "@/lib/types";
+import { SearchGroup, User } from "@/lib/types";
 import { ScrollArea } from "./ui/scroll-area";
 
 export function SearchModal({
@@ -17,7 +17,7 @@ export function SearchModal({
   onJoinGroup: (groupId: SearchGroup) => void;
 }) {
   const [query, setQuery] = useState("");
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [groups, setGroups] = useState<SearchGroup[]>([]);
   const [loading, setLoading] = useState(false);
   const [joiningGroupId, setJoiningGroupId] = useState<string | null>(null);
@@ -36,8 +36,8 @@ export function SearchModal({
     // Mock search results
     setTimeout(() => {
       setUsers([
-        { id: 'mock-u1', name: 'Mock User 1', email: 'user1@example.com' },
-        { id: 'mock-u2', name: 'Mock User 2', email: 'user2@example.com' }
+        { id: 'mock-u1', name: 'Mock User 1', email: 'user1@example.com', avatar: null },
+        { id: 'mock-u2', name: 'Mock User 2', email: 'user2@example.com', avatar: null }
       ]);
       setGroups([
         { id: 'g1', name: 'Mock Group', description: 'A test group', memberCount: 5, messageCount: 10, isMember: false, isPrivate: false, avatar: null }
@@ -106,7 +106,7 @@ export function SearchModal({
                   <div
                     key={user.id}
                     onClick={() => {
-                      const guestUser = { ...user, image: user.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name || user.id}` };
+                      const guestUser: User = { ...user, avatar: user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name || user.id}` };
                       onCreateChat(guestUser);
                       setQuery("");
                       setUsers([]);
@@ -116,11 +116,11 @@ export function SearchModal({
                   >
                     <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-medium">
                       {user.name?.charAt(0).toUpperCase() ||
-                        user.email.charAt(0).toUpperCase()}
+                        user.email?.charAt(0).toUpperCase() || '?'}
                     </div>
                     <div className="flex-1">
                       <p className="font-medium">{user.name || user.email}</p>
-                      {user.name && (
+                      {user.name && user.email && (
                         <p className="text-sm text-gray-500">{user.email}</p>
                       )}
                     </div>

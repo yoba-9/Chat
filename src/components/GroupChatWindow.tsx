@@ -88,7 +88,7 @@ export default function GroupChatWindow() {
   useEffect(() => {
     if (!socket || !selectedChatId) return;
     if (hasMarkedRef.current === selectedChatId) return;
-    hasMarkedRef.current === selectedChatId;
+    hasMarkedRef.current = selectedChatId;
     socket.emit("mark_chat_read", { chatId: selectedChatId });
   }, [socket, selectedChatId]);
 
