@@ -7,7 +7,7 @@ export interface User {
     name: string | null;
     email: string | null;
     username?: string;
-    image: string | null;
+    avatar: string | null;
     password?: string;
 }
 

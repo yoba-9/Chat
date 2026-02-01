@@ -17,7 +17,7 @@ export default function ProfileModal({ isOpen, onClose }: { isOpen: boolean; onC
 
   const [formData, setFormData] = useState({
     name: user?.name || '',
-    avatar: user?.image || undefined
+    avatar: user?.avatar || undefined
   });
   const [loading, setLoading] = useState(false);
 
@@ -28,7 +28,7 @@ export default function ProfileModal({ isOpen, onClose }: { isOpen: boolean; onC
 
     // Update local storage for persistence
     const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    const updatedUser = { ...currentUser, name: formData.name, image: formData.avatar };
+    const updatedUser = { ...currentUser, name: formData.name, avatar: formData.avatar };
     localStorage.setItem('currentUser', JSON.stringify(updatedUser));
 
     // Update store state
