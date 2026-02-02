@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { DirectChat, GroupChat, SearchGroup } from "@/lib/types";
+import { DirectChat, GroupChat, SearchGroup, User } from "@/lib/types";
 import { SearchModal } from "./SearchModal";
 import { useChatStore } from "@/store/chatStore";
 import { useSession } from "@/components/providers";
@@ -10,7 +10,7 @@ import { Button } from "./ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import CreateGroupModal from "./GroupChatList";
 
-async function createChat(participant: any, currentUser: any): Promise<DirectChat> {
+async function createChat(participant: User, currentUser: User | null): Promise<DirectChat> {
   console.log("Mock create chat with:", participant.id);
   const now = new Date().toISOString();
   return {
@@ -25,7 +25,7 @@ async function createChat(participant: any, currentUser: any): Promise<DirectCha
       id: participant.id,
       name: participant.name || "Mock User",
       email: participant.email || "mock@example.com",
-      avatar: participant.image || participant.avatar || null
+      avatar: participant.avatar || null
     },
     messages: [],
     createdAt: now,
@@ -458,7 +458,7 @@ export default function UserList() {
 
   const renderAllUsers = () => {
     const usersJson = typeof window !== 'undefined' ? localStorage.getItem('users') || '[]' : '[]';
-    let allUsers = [];
+    let allUsers: User[] = [];
     try {
       allUsers = JSON.parse(usersJson);
       if (!Array.isArray(allUsers)) allUsers = [];
@@ -467,17 +467,17 @@ export default function UserList() {
     }
 
     if (allUsers.length < 5) {
-      const fallbacks = [
-        { id: "mock-eyob", name: "Eyob", email: "eyob@example.com", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Eyob" },
-        { id: "mock-1", name: "Abraham Degu", email: "abraham@example.com", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Abraham" },
-        { id: "mock-2", name: "Mercy Demeke", email: "mercy@example.com", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Marie" },
-        { id: "mock-3", name: "Yonas Mamo", email: "yonas@example.com", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Albert" },
-        { id: "mock-4", name: "Addis Neway", email: "addis@example.com", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Isaac" },
+      const fallbacks: User[] = [
+        { id: "mock-eyob", name: "Eyob", email: "eyob@example.com", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Eyob" },
+        { id: "mock-1", name: "Abraham Degu", email: "abraham@example.com", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Abraham" },
+        { id: "mock-2", name: "Mercy Demeke", email: "mercy@example.com", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Marie" },
+        { id: "mock-3", name: "Yonas Mamo", email: "yonas@example.com", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Albert" },
+        { id: "mock-4", name: "Addis Neway", email: "addis@example.com", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Isaac" },
       ];
-      allUsers = [...allUsers, ...fallbacks.filter(f => !allUsers.find((u: any) => u.id === f.id))];
+      allUsers = [...allUsers, ...fallbacks.filter(f => !allUsers.find((u) => u.id === f.id))];
     }
 
-    const filteredUsers = allUsers.filter((u: any) => u.id !== currentUser?.id);
+    const filteredUsers = allUsers.filter((u) => u.id !== currentUser?.id);
 
     return (
       <div className="w-full md:w-96 bg-card border-r border-border flex flex-col h-full text-foreground">
@@ -494,7 +494,7 @@ export default function UserList() {
               <p>No other users found</p>
             </div>
           ) : (
-            filteredUsers.map((user: any) => (
+            filteredUsers.map((user: User) => (
               <div
                 key={user.id}
                 onClick={() => {
@@ -505,10 +505,10 @@ export default function UserList() {
                 <div className="flex items-center space-x-3">
                   <div className="relative">
                     <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-medium overflow-hidden">
-                      {user.image ? (
-                        <img src={user.image} alt={user.name} className="w-full h-full object-cover" />
+                      {user.avatar ? (
+                        <img src={user.avatar} alt={user.name || ''} className="w-full h-full object-cover" />
                       ) : (
-                        user.name?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase()
+                        user.name?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || '?'
                       )}
                     </div>
                     <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-background ${onlineUsers.has(user.id) ? 'bg-green-500' : 'bg-muted-foreground/30'

@@ -58,7 +58,7 @@ export default function SignupPage() {
         email: formData.email,
         username: formData.username,
         password: formData.password,
-        image: `https://api.dicebear.com/7.x/avataaars/svg?seed=${formData.username || formData.email}`
+        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${formData.username || formData.email}`
       }
 
       const result = await signUp(newUser as any);
